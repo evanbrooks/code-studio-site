@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <meta name="description" content=".">
     <meta name="author" content="Evan Brooks">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
     <title>SVG Masking test</title>
     <!-- <link rel="stylesheet" href="style.css"> -->
     <style>
@@ -14,10 +16,9 @@
     }
       body {
         background: gray;
-        font: 25px/1.5 monospace;
+        font: 16px/1.5 monospace;
       }
       header {
-        font-size: 100px;
       }
       footer {
         position: fixed;
@@ -26,7 +27,7 @@
         right: 0;
         background: blue;
         color: white;
-        padding: 1em;
+        padding: 0.4em;
         z-index: 9;
       }
       svg {
@@ -34,12 +35,17 @@
         top: 0;
         left: 0;
       }
+      img {
+        width: 100%;
+      }
     </style>
 </head>
 <body>
   <header>
     Svg masking test
   </header>
+  <img src="header.jpg" />
+
   <footer>
     <div id="frame_viewer">?</div>
   </footer>
