@@ -78,6 +78,28 @@
 
 
   <script src="d3.js"></script>
+
+
+  <script>
+    // window.performance.now polyfill
+    (function(){
+      // prepare base perf object
+      if (typeof window.performance === 'undefined') {
+          window.performance = {};
+      }
+      if (!window.performance.now){
+        var nowOffset = Date.now();
+        if (performance.timing && performance.timing.navigationStart){
+          nowOffset = performance.timing.navigationStart
+        }
+        window.performance.now = function now(){
+          return Date.now() - nowOffset;
+        }
+      }
+    })();
+  </script>
+
+
   <script>
     var svg = d3.select("#svg");
 
@@ -191,34 +213,6 @@
       frame_viewer = document.querySelector("#frame_viewer");
       frame_viewer.innerText = (1000 / frame_length).toFixed(1);
     }
-
-
-
-
-    // window.performance.now polyfill
-    (function(){
- 
-      // prepare base perf object
-      if (typeof window.performance === 'undefined') {
-          window.performance = {};
-      }
-     
-      if (!window.performance.now){
-        
-        var nowOffset = Date.now();
-     
-        if (performance.timing && performance.timing.navigationStart){
-          nowOffset = performance.timing.navigationStart
-        }
-     
-     
-        window.performance.now = function now(){
-          return Date.now() - nowOffset;
-        }
-     
-      }
-     
-    })();
 
   </script>
 
