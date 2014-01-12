@@ -1,0 +1,198 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content=".">
+    <meta name="author" content="Evan Brooks">
+    <title>SVG Masking test</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <style>
+    * {
+      box-sizing: border-box;
+      font: inherit;
+    }
+      body {
+        background: gray;
+        font: 25px/1.5 monospace;
+      }
+      header {
+        font-size: 100px;
+      }
+      footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: blue;
+        color: white;
+        padding: 1em;
+        z-index: 9;
+      }
+      svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    </style>
+</head>
+<body>
+  <header>
+    Svg masking test
+  </header>
+  <footer>
+    <div id="frame_viewer">?</div>
+  </footer>
+  <svg version="1.1" id="svg" x="0px" y="0px"
+   width="1000px" height="800px" viewBox="0 0 1000 800" xml:space="preserve">
+
+    <!--<path id="c" d="M92.866,2c47.13,0,74.849,28.029,81.628,66.53h-49.283c-4.928-13.861-15.094-23.103-32.345-23.103
+  c-26.182,0-40.965,23.103-40.965,54.216c0,30.802,14.784,54.21,40.965,54.21c17.251,0,27.417-9.24,32.345-23.408h49.283
+  c-6.779,38.812-34.498,66.841-81.628,66.841C39.886,197.286,2,156.938,2,99.644C2,42.349,39.886,2,92.866,2z"/> -->
+
+    <!--<path id="c" d="
+    M
+
+    92.866, 2
+
+    c   47.13, 0,         74.849, 28.029,   81.628, 66.53
+
+    h   -49.283
+
+    c   -4.928 -13.861    -15.094 -23.103   -32.345 -23.103
+    c   -26.182, 0        -40.965, 23.103   -40.965, 54.216
+    c   0, 30.802,        14.784, 54.21,    40.965, 54.21
+    c   17.251, 0,        27.417 -9.24,     32.345 -23.408
+
+    h   49.283
+
+    c   -6.779, 38.812    -34.498, 66.841   -81.628, 66.841
+    C   39.886, 197.286,  2, 156.938,       2, 99.644
+    C   2, 42.349,        39.886, 2,        92.866, 2
+    z
+
+
+    "/> -->
+
+  </svg>
+
+
+  <script src="d3.js"></script>
+  <script>
+    var svg = d3.select("#svg");
+
+
+    var letter_data = [
+      "M", [92.866, 2],
+
+      "c", [47.13, 0],         [74.849, 28.029],   [81.628, 66.53],
+
+      "h", [-49.283],
+
+      "c", [-4.928, -13.861],  [-15.094, -23.103],  [-32.345, -23.103],
+      "c", [-26.182, 0],       [-40.965, 23.103],   [-40.965, 54.216],
+      "c", [0, 30.802],        [14.784, 54.21],     [40.965, 54.21],
+      "c", [17.251, 0],        [27.417, -9.24],      [32.345, -23.408],
+
+      "h", [49.283],
+
+      "c", [-6.779, 38.812],   [-34.498, 66.841],   [-81.628, 66.841],
+      "C", [39.886, 197.286],  [2, 156.938],        [2, 99.644],
+      "C", [2, 42.349],        [39.886, 2],         [92.866, 2],
+      "z",
+    ];
+
+
+    svg.attr("fill", "transparent");
+
+    svg.append("circle")
+      .attr("fill", "red")
+      .attr("cx", 20)
+      .attr("cy", 20)
+      .attr("r", 20);
+
+    svg.append("rect")
+      .attr("fill", "green")
+      .attr("x", 20)
+      .attr("y", 20)
+      .attr("height", 15)
+      .attr("width", 30);
+
+    // var letter_path_str = document.querySelector("#c").getAttribute("d");
+    var rect_str = path_rect_str(0,0,1000,500)
+    var combined = rect_str + " " + letter_str(letter_data);
+
+    svg.append("path")
+      .attr("id", "letter_c")
+      .attr("fill-rule", "evenodd")
+      .attr("fill", "white")
+      .attr("d", combined);
+
+    var letter_c = svg.select("#letter_c");
+
+
+    var dx = 0, dy = 0;
+    var now = window.performance.now();
+
+    (function tick(){
+      window.requestAnimationFrame(tick);
+
+      letter_c
+        .attr("d", rect_str + shifted_letter_str(letter_data, dx, dy));
+
+      dx++;
+      dy++;
+
+      then = now;
+      now = window.performance.now();
+      var frame_length = now - then;
+      frame_log(frame_length);
+    })();
+
+
+    // (string) pathRectStr( int x, int y, int w, int h)
+    function path_rect_str(x,y,w,h) {
+      var x2 = x + w;
+      var y2 = y + h;
+      // return "M" + x + "," + y + "," + x2 + "," + y + "," + x2 + "," + y2 + "," + x + "," + y2 + "z";
+      return "M" + x + "," + y + "," + x2 + "," + y + "," + x2 + "," + y2 + "," + x + "," + y2 + "z";
+    }
+
+    function letter_str(letter) {
+      return letter.reduce(function(prevVal, currVal, index, array){
+        if (currVal instanceof Array) return prevVal + " " + currVal.join();
+        return prevVal + " " + currVal;
+      });
+    }
+
+    function shifted_letter_str(letter, dx, dy) {
+      var is_relative = false;
+      return letter.reduce(function(prevVal, currVal, index, array){
+        if (typeof currVal == "string") {
+          if (currVal == "M" || currVal == "C") is_relative = false;
+          else is_relative = true;
+        }
+        else if (currVal instanceof Array) {
+          var point = "";
+          if (currVal.length > 1 && !is_relative) {
+            point = (currVal[0] + dx) + "," + (currVal[1] + dy)
+          }
+          else {
+            point = currVal.join();
+          }
+          return prevVal + " " + point;
+        }
+        return prevVal + " " + currVal;
+      });
+    }
+
+    var frame_viewer = document.querySelector("#frame_viewer");
+    function frame_log(frame_length) {
+      frame_viewer = document.querySelector("#frame_viewer");
+      frame_viewer.innerText = (1000 / frame_length).toFixed(1);
+    }
+
+  </script>
+
+</body>
+</html>
