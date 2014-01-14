@@ -162,14 +162,18 @@
     var dx = 0, dy = 0;
     var now = window.performance.now();
 
+
+    // TICK
+    // ====
+
     (function tick(){
       window.requestAnimationFrame(tick);
 
       letter_c
-        .attr("d", rect_str + shifted_letter_str(letter_data, dx, dy));
+        .attr("d", rect_str + shifted_letter_str(letter_data, dx, dy) + shifted_letter_str(letter_data, dx + 150, dy) + shifted_letter_str(letter_data, dx * 1.5 + 300, dy) + shifted_letter_str(letter_data, dx, dy + 150) + shifted_letter_str(letter_data, dx + 150, dy + 150) + shifted_letter_str(letter_data, dx + 300, dy * 0.5 + 150) + shifted_letter_str(letter_data, dx + 450, dy * 2) + shifted_letter_str(letter_data, dx * -1 + 450, dy + 150) + shifted_letter_str(letter_data, dx + 600, dy));
 
-      dx++;
-      dy++;
+      dx += 0.1;
+      dy += 0.1;
 
       then = now;
       now = window.performance.now();
